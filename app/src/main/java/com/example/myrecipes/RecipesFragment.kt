@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
@@ -28,10 +29,6 @@ class RecipesFragment : Fragment(), RecipesAdapter.OnRecipeAdapterListener {
         val view = inflater.inflate(R.layout.fragment_recipes, container, false)
         viewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
 
-        view.findViewById<ImageView>(R.id.iv_favorite).setOnClickListener {
-            val action = RecipesFragmentDirections.actionFragmentRecipesToFragmentFavorite()
-            findNavController().navigate(action)
-        }
 
         view.findViewById<ImageView>(R.id.iv_add).setOnClickListener {
             val action = RecipesFragmentDirections.actionFragmentRecipesToFragmentAdd()
@@ -45,22 +42,49 @@ class RecipesFragment : Fragment(), RecipesAdapter.OnRecipeAdapterListener {
 
         viewModel.allRecipeList.observe(viewLifecycleOwner) { recipes ->
             var tagList: MutableList<String> = mutableListOf()
+            var timeList: MutableList<String> = mutableListOf()
+
+            tagList.add("All")
+            tagList.add("Favorite")
 
             recipes.forEach {
                 tagList.add(it.tag)
+                timeList.add(it.time.toString())
             }
 
-            initFilters(view, tagList.distinct())
+            initFilters(view, tagList.distinct(), timeList.distinct())
 
             recipesAdapter.updateList(recipes)
+            recipesAdapter.initFilterList()
+        }
+
+        view.findViewById<Spinner>(R.id.spin_filterTag).onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val spinner = parent as? Spinner
+
+                val selectedTag = spinner?.selectedItem?.toString()
+
+                recipesAdapter.setTagFilter(selectedTag)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+
+        view.findViewById<Spinner>(R.id.spin_filterDificulty).onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val spinner = parent as? Spinner
+
+                val selectedTag = spinner?.selectedItem?.toString()
+
+                recipesAdapter.setDif(selectedTag)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
         }
 
         return view
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onViewRecipe(recipe: RecipeEntity) {
@@ -68,7 +92,7 @@ class RecipesFragment : Fragment(), RecipesAdapter.OnRecipeAdapterListener {
         findNavController().navigate(action)
     }
 
-    fun initFilters(view: View, tags: List<String>) {
+    fun initFilters(view: View, tags: List<String>, time: List<String>) {
         val spinnerTag = view.findViewById<Spinner>(R.id.spin_filterTag)
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, tags)
 
@@ -76,12 +100,20 @@ class RecipesFragment : Fragment(), RecipesAdapter.OnRecipeAdapterListener {
 
         spinnerTag.adapter = adapter
 
-        val difList = listOf("Hard", "Medium", "Easy")
-        val spinnerTime = requireView().findViewById<Spinner>(R.id.spin_filterDificulty)
+        val difList = listOf("All", "Hard", "Medium", "Easy")
+        val spinnerDif = requireView().findViewById<Spinner>(R.id.spin_filterDificulty)
         val adapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, difList)
 
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        spinnerTime.adapter = adapter2
+        spinnerDif.adapter = adapter2
+
+
+        val spinnerTime = requireView().findViewById<Spinner>(R.id.spin_filterTime)
+        val adapter3 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, time)
+
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        spinnerTime.adapter = adapter3
     }
 }

@@ -28,22 +28,4 @@ class RecipesViewModel(application: Application): AndroidViewModel(application) 
             allRecipeList.postValue(list)
         }
     }
-
-    fun deleteRecord(noteEntity: RecipeEntity) {
-        CoroutineScope(Dispatchers.IO).launch {
-          /*  appDao.deleteRecord(noteEntity)
-
-            val updatedList = appDao.getAllRecordsFromDB() ?: mutableListOf()
-            allPictureList.postValue(updatedList)*/
-        }
-
-    }
-
-    fun updateRecord(noteEntity: RecipeEntity) {
-        CoroutineScope(Dispatchers.IO).launch {
-         /*   appDao.updateRecord(noteEntity)
-            getAllRecords()*/
-        }
-    }
-
 }

@@ -14,9 +14,6 @@
             android:id="@+id/action_fragment_recipes_to_fragment_add"
             app:destination="@id/fragment_add" />
         <action
-            android:id="@+id/action_fragment_recipes_to_fragment_favorite"
-            app:destination="@id/fragment_favorite" />
-        <action
             android:id="@+id/action_fragment_recipes_to_fragment_week"
             app:destination="@id/fragment_week" />
         <action
@@ -33,15 +30,6 @@
             app:destination="@id/fragment_recipes" />
         <action
             android:id="@+id/action_fragment_add_to_fragment_recipes2"
-            app:destination="@id/fragment_recipes" />
-    </fragment>
-    <fragment
-        android:id="@+id/fragment_favorite"
-        android:name="com.example.myrecipes.FavoriteFragment"
-        android:label="fragment_favorite"
-        tools:layout="@layout/fragment_favorite" >
-        <action
-            android:id="@+id/action_fragment_favorite_to_fragment_recipes"
             app:destination="@id/fragment_recipes" />
     </fragment>
     <fragment

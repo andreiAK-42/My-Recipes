@@ -93,6 +93,15 @@
 
             </Spinner>
 
+            <Spinner
+                android:id="@+id/spin_filterTime"
+                android:layout_width="130dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_white_rounded"
+                android:layout_marginStart="20dp">
+
+            </Spinner>
+
 
         </LinearLayout>
 
@@ -131,6 +140,11 @@
                 android:layout_height="30dp"
                 android:layout_weight="1" />
 
+            <View
+                android:layout_width="0dip"
+                android:layout_height="30dp"
+                android:layout_weight="1" />
+
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -138,18 +152,7 @@
                 android:src="@drawable/week_off">
             </ImageView>
 
-            <View
-                android:layout_width="0dip"
-                android:layout_height="30dp"
-                android:layout_weight="1" />
 
-            <ImageView
-                android:id="@+id/iv_favorite"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:src="@drawable/star_off">
-            </ImageView>
 
         </LinearLayout>
 

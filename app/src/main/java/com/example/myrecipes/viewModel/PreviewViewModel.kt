@@ -26,9 +26,9 @@ class PreviewViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun updateRecord(recipeEntity: RecipeEntity) {
+    fun updateRecord() {
         CoroutineScope(Dispatchers.IO).launch {
-            recipesDao.updateRecipe(recipeEntity)
+            recipesDao.updateRecipe(recipe.value!!)
         }
     }
 
