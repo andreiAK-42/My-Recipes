@@ -1,5 +1,6 @@
 package database
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -23,4 +24,7 @@ interface RecipesDao {
 
     @Delete
     fun deleteRecipe(picture: RecipeEntity)
+
+    @Query("SELECT * FROM recipes_entity WHERE daysOfWeek LIKE '%' || :day || '%'")
+    fun getRecipesByDay(day: String): LiveData<List<RecipeEntity>>
 }

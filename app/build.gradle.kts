@@ -59,6 +59,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.core:core:1.12.0")
 
+    implementation("com.google.code.gson:gson:2.11.0")
 
     // Room architecture component dependencies
     implementation("androidx.room:room-runtime:2.4.1")

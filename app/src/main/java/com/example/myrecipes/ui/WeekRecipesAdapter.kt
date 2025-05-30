@@ -16,18 +16,13 @@ import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.myrecipes.R
-import com.example.myrecipes.RecipesFragment
 import com.example.myrecipes.WeekFragment
 import database.RecipeEntity
 
-class RecipesAdapter(
-    private var recipeList: MutableList<RecipeEntity>, private val listener: RecipesFragment
-) : RecyclerView.Adapter<RecipesAdapter.ViewHolder>() {
-
-    var currentTagFilter: String? = null
-    var currentDif: String? = null
-    var currentTime: String? = null
-
+class WeekRecipesAdapter(
+    private var recipeList: MutableList<RecipeEntity>,
+    private val listener: WeekFragment
+) : RecyclerView.Adapter<WeekRecipesAdapter.ViewHolder>() {
     private var originalList: MutableList<RecipeEntity> = recipeList
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -67,23 +62,11 @@ class RecipesAdapter(
                 .error(R.drawable.ic_launcher_foreground)
                 .into(holder.image)
         }
-
-        holder.image.setOnClickListener {
-            listener.onViewRecipe(recipe)
-        }
     }
 
     fun updateList(newList: List<RecipeEntity>) {
         recipeList = newList.toMutableList()
         notifyDataSetChanged()
-    }
-
-    fun initFilterList() {
-        originalList = recipeList.toList().toMutableList()
-    }
-
-    interface OnRecipeAdapterListener {
-        fun onViewRecipe(recipe: RecipeEntity)
     }
 
     override fun getItemCount(): Int {
@@ -106,62 +89,5 @@ class RecipesAdapter(
 
         return output
     }
-
-    fun setTagFilter(tag: String?) {
-        currentTagFilter = tag
-        applyFilters()
-    }
-
-    fun setDif(newDif: String?) {
-        currentDif = newDif
-        applyFilters()
-    }
-
-    fun searchFilter(query: String) {
-        var filteredList = originalList.toList()
-
-        if (query.isNotEmpty() && query.length > 1) {
-            filteredList = filteredList.filter { recipe ->
-                recipe.name.lowercase().contains(query.lowercase())
-            }
-        }
-
-        recipeList.clear()
-        recipeList.addAll(filteredList)
-        notifyDataSetChanged()
-    }
-
-    private fun applyFilters() {
-        var filteredList = originalList.toList()
-
-        if (currentTagFilter != null && currentTagFilter != "All") {
-            if (currentTagFilter == "Favorite") {
-                if (currentTagFilter!!.isNotEmpty()) {
-                    filteredList = filteredList.filter { recipe ->
-                        recipe.favorite
-                    }
-                }
-            } else if (currentTagFilter!!.isNotEmpty()) {
-                filteredList = filteredList.filter { recipe ->
-                    recipe.tag.contains(currentTagFilter!!)
-                }
-            }
-        }
-
-        if (currentDif != null && currentDif != "All") {
-            filteredList = filteredList.filter { recipe ->
-                recipe.difficulty == currentDif!!
-            }
-        }
-
-        if (currentTime != null) {
-            filteredList = filteredList.filter { recipe ->
-                recipe.time == currentTime!!.toInt()
-            }
-        }
-
-        recipeList.clear()
-        recipeList.addAll(filteredList)
-        notifyDataSetChanged()
-    }
 }
+

@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.myrecipes.viewModel.AddViewModel
 import com.google.android.material.chip.Chip
+import com.google.gson.Gson
 import database.RecipeEntity
 
 class AddFragment : Fragment() {
@@ -27,10 +28,6 @@ class AddFragment : Fragment() {
     private lateinit var viewModel: AddViewModel
     private val REQUEST_SELECT_IMAGE_IN_ALBUM = 2
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,6 +35,12 @@ class AddFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_add, container, false)
         viewModel = ViewModelProvider(this).get(AddViewModel::class.java)
 
+        initUI(view)
+
+        return view
+    }
+
+    fun initUI(view: View) {
         view.findViewById<ImageView>(R.id.iv_back).setOnClickListener {
             val action = AddFragmentDirections.actionFragmentAddToFragmentRecipes2()
             findNavController().navigate(action)
@@ -66,14 +69,13 @@ class AddFragment : Fragment() {
                 tag = view.findViewById<EditText>(R.id.et_tag).text.toString(),
                 servings = view.findViewById<EditText>(R.id.et_servings).text.toString().toInt(),
                 favorite = false,
-                difficulty = spinner.getSelectedItem().toString()
+                difficulty = spinner.getSelectedItem().toString(),
+                daysOfWeek = Gson().toJson(arrayOf(String))
             ))
 
             val action = AddFragmentDirections.actionFragmentAddToFragmentRecipes()
             findNavController().navigate(action)
         }
-
-        return view
     }
 
     fun selectImageInAlbum() {
@@ -90,7 +92,6 @@ class AddFragment : Fragment() {
 
                 requireView().findViewById<Chip>(R.id.cp_addPhoto).text = "Photo Uploaded"
                 photoWillBeUpload = true
-
             }
         }
     }

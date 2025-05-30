@@ -16,4 +16,5 @@ class RecipeEntity(
     @ColumnInfo(name = "tag") var tag: String,
     @ColumnInfo(name = "servings") var servings: Int,
     @ColumnInfo(name = "difficulty") var difficulty: String,
+    @ColumnInfo(name = "daysOfWeek") var daysOfWeek: String?
 )
