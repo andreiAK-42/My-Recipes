@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragment_recipes">
+
+    <fragment
+        android:id="@+id/fragment_recipes"
+        android:name="com.example.myrecipes.RecipesFragment"
+        android:label="fragment_recipes"
+        tools:layout="@layout/fragment_recipes" >
+        <action
+            android:id="@+id/action_fragment_recipes_to_fragment_add"
+            app:destination="@id/fragment_add" />
+        <action
+            android:id="@+id/action_fragment_recipes_to_fragment_favorite"
+            app:destination="@id/fragment_favorite" />
+        <action
+            android:id="@+id/action_fragment_recipes_to_fragment_week"
+            app:destination="@id/fragment_week" />
+        <action
+            android:id="@+id/action_fragment_recipes_to_fragment_preview"
+            app:destination="@id/fragment_preview" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_add"
+        android:name="com.example.myrecipes.AddFragment"
+        android:label="fragment_add"
+        tools:layout="@layout/fragment_add" >
+        <action
+            android:id="@+id/action_fragment_add_to_fragment_recipes"
+            app:destination="@id/fragment_recipes" />
+        <action
+            android:id="@+id/action_fragment_add_to_fragment_recipes2"
+            app:destination="@id/fragment_recipes" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_favorite"
+        android:name="com.example.myrecipes.FavoriteFragment"
+        android:label="fragment_favorite"
+        tools:layout="@layout/fragment_favorite" >
+        <action
+            android:id="@+id/action_fragment_favorite_to_fragment_recipes"
+            app:destination="@id/fragment_recipes" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_week"
+        android:name="com.example.myrecipes.WeekFragment"
+        android:label="fragment_week"
+        tools:layout="@layout/fragment_week" >
+        <action
+            android:id="@+id/action_fragment_week_to_fragment_recipes"
+            app:destination="@id/fragment_recipes" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_preview"
+        android:name="com.example.myrecipes.PreviewFragment"
+        android:label="fragment_preview"
+        tools:layout="@layout/fragment_preview" >
+        <action
+            android:id="@+id/action_fragment_preview_to_fragment_recipes"
+            app:destination="@id/fragment_recipes" />
+        <argument
+            android:name="id"
+            app:argType="integer" />
+    </fragment>
+</navigation>
