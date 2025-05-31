@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.myrecipes.viewModel.PreviewViewModel
@@ -26,28 +27,30 @@ import java.util.Collections
 class PreviewFragment : Fragment() {
     private lateinit var viewModel: PreviewViewModel
     private val REQUEST_SELECT_IMAGE_IN_ALBUM = 2
-    var photoPath: String? = null
+    private var photoPath: String? = null
+    private var selectedLanguage: BooleanArray = BooleanArray(7)
+    private val langList = ArrayList<Int>()
+    private val langArray = arrayOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 
-    var selectedLanguage: BooleanArray = booleanArrayOf(false, false, false, false, false, false, false)
-    var langList: ArrayList<Int> = ArrayList()
-    var langArray: Array<String> = arrayOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_preview, container, false)
         viewModel = ViewModelProvider(this).get(PreviewViewModel::class.java)
 
         val args: PreviewFragmentArgs by navArgs()
         viewModel.getRecord(args.id)
-
-        initUI(view)
+        setupUI(view)
 
         return view
     }
 
-    fun initUI(view: View) {
+    private fun setupUI(view: View) {
+        setupObservers(view)
+        setupNavigation(view)
+        setupDaysSelection(view)
+        setupChipListeners(view)
+    }
+
+    private fun setupObservers(view: View) {
         viewModel.recipe.observe(viewLifecycleOwner) { recipe ->
             view.findViewById<EditText>(R.id.et_name).setText(recipe.name)
             view.findViewById<EditText>(R.id.et_ingredients).setText(recipe.ingredients)
@@ -56,94 +59,87 @@ class PreviewFragment : Fragment() {
             view.findViewById<EditText>(R.id.et_tag).setText(recipe.tag)
             view.findViewById<EditText>(R.id.et_servings).setText(recipe.servings.toString())
         }
+    }
 
+    private fun setupNavigation(view: View) {
         view.findViewById<ImageView>(R.id.iv_back).setOnClickListener {
-            val action = PreviewFragmentDirections.actionFragmentPreviewToFragmentRecipes()
-            findNavController().navigate(action)
-        }
-
-        val textView = view.findViewById<TextView>(R.id.tv_weekDays)
-
-        textView.setOnClickListener {
-            val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-
-            builder.setTitle("Select Days")
-            builder.setCancelable(false)
-
-            builder.setMultiChoiceItems(
-                langArray,
-                selectedLanguage
-            ) { dialogInterface, i, b ->
-                if (b) {
-                    langList.add(i)
-                    Collections.sort(langList)
-                } else {
-                    langList.remove(i)
-                }
-            }
-
-            builder.setPositiveButton("OK") { dialogInterface, i ->
-                val stringBuilder = StringBuilder()
-                for (j in 0 until langList.size) {
-                    stringBuilder.append(langArray[langList[j]])
-                    if (j != langList.size - 1) {
-                        stringBuilder.append(", ")
-                    }
-                }
-                textView.text = stringBuilder.toString()
-            }
-
-            builder.setNegativeButton("Cancel") { dialogInterface, i ->
-                dialogInterface.dismiss()
-            }
-
-            builder.setNeutralButton("Clear All") { dialogInterface, i ->
-                for (j in selectedLanguage.indices) {
-                    selectedLanguage[j] = false
-                    langList.clear()
-                    textView.text = ""
-                }
-            }
-            builder.show()
-        }
-
-        view.findViewById<Chip>(R.id.cp_addRecipe).setOnClickListener {
-            if (photoPath != null) {
-                viewModel.recipe.value!!.path = photoPath
-            }
-
-            viewModel.recipe.value!!.daysOfWeek = Gson().toJson(langList)
-            viewModel.updateRecord()
-
-            val action = PreviewFragmentDirections.actionFragmentPreviewToFragmentRecipes()
-            findNavController().navigate(action)
-        }
-
-        view.findViewById<Chip>(R.id.cp_addPhoto).setOnClickListener {
-            selectImageInAlbum()
-        }
-
-        view.findViewById<Chip>(R.id.cp_deleteRecipe).setOnClickListener {
-            viewModel.deleteRecord(viewModel.recipe.value!!)
-            val action = PreviewFragmentDirections.actionFragmentPreviewToFragmentRecipes()
-            findNavController().navigate(action)
-        }
-
-        view.findViewById<ImageView>(R.id.iv_favorite).setOnClickListener {
-            val iv_favorite = view.findViewById<ImageView>(R.id.iv_favorite)
-            if (viewModel.recipe.value!!.favorite) {
-                iv_favorite.background = resources.getDrawable(R.drawable.heart_off)
-                viewModel.recipe.value!!.favorite = false
-                viewModel.updateRecord()
-            } else {
-                iv_favorite.background = resources.getDrawable(R.drawable.heart_on)
-                viewModel.recipe.value!!.favorite = true
-                viewModel.updateRecord()
-            }
+            navigateTo(PreviewFragmentDirections.actionFragmentPreviewToFragmentRecipes())
         }
     }
 
-    fun selectImageInAlbum() {
+    private fun navigateTo(action: NavDirections) {
+        findNavController().navigate(action)
+    }
+
+    private fun setupDaysSelection(view: View) {
+        val textView = view.findViewById<TextView>(R.id.tv_weekDays)
+        textView.setOnClickListener {
+            showDaysSelectionDialog(textView)
+        }
+    }
+
+    private fun showDaysSelectionDialog(textView: TextView) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Select Days")
+            .setCancelable(false)
+            .setMultiChoiceItems(langArray, selectedLanguage) { dialog, index, isChecked ->
+                if (isChecked) {
+                    langList.add(index)
+                } else {
+                    langList.remove(index)
+                }
+            }
+            .setPositiveButton("OK") { dialog, _ ->
+                updateSelectedDays(textView)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+            .setNeutralButton("Clear All") { dialog, _ ->
+                selectedLanguage.fill(false)
+                langList.clear()
+                textView.text = ""
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun updateSelectedDays(textView: TextView) {
+        textView.text = langList.joinToString(", ") { langArray[it] }
+    }
+
+    private fun setupChipListeners(view: View) {
+        view.findViewById<Chip>(R.id.cp_addRecipe).setOnClickListener { addRecipe() }
+        view.findViewById<Chip>(R.id.cp_addPhoto).setOnClickListener { selectImageInAlbum() }
+        view.findViewById<Chip>(R.id.cp_deleteRecipe).setOnClickListener { deleteRecipe() }
+        view.findViewById<ImageView>(R.id.iv_favorite).setOnClickListener { toggleFavoriteStatus(it) }
+    }
+
+    private fun addRecipe() {
+        viewModel.recipe.value?.apply {
+            path = photoPath
+            daysOfWeek = Gson().toJson(langList)
+            viewModel.updateRecord()
+        }
+        navigateTo(PreviewFragmentDirections.actionFragmentPreviewToFragmentRecipes())
+    }
+
+    private fun deleteRecipe() {
+        viewModel.recipe.value?.let {
+            viewModel.deleteRecord(it)
+            navigateTo(PreviewFragmentDirections.actionFragmentPreviewToFragmentRecipes())
+        }
+    }
+
+    private fun toggleFavoriteStatus(view: View) {
+        val ivFavorite = view as ImageView
+        val isFavorite = viewModel.recipe.value!!.favorite
+
+        viewModel.recipe.value!!.favorite = !isFavorite
+        ivFavorite.setBackgroundResource(if (isFavorite) R.drawable.heart_off else R.drawable.heart_on)
+        viewModel.updateRecord()
+    }
+
+    private fun selectImageInAlbum() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(intent, REQUEST_SELECT_IMAGE_IN_ALBUM)
     }
@@ -154,7 +150,6 @@ class PreviewFragment : Fragment() {
         if (requestCode == REQUEST_SELECT_IMAGE_IN_ALBUM && resultCode == Activity.RESULT_OK) {
             data?.data?.let { uri ->
                 photoPath = uri.toString()
-
                 requireView().findViewById<Chip>(R.id.cp_addPhoto).text = "Photo Uploaded"
             }
         }

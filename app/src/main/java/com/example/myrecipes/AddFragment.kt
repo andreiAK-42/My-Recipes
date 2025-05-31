@@ -23,76 +23,92 @@ import database.RecipeEntity
 
 class AddFragment : Fragment() {
 
-    var photoPath: String? = null
-    var photoWillBeUpload: Boolean = false
+    private var photoPath: String? = null
     private lateinit var viewModel: AddViewModel
     private val REQUEST_SELECT_IMAGE_IN_ALBUM = 2
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_add, container, false)
         viewModel = ViewModelProvider(this).get(AddViewModel::class.java)
 
-        initUI(view)
+        setupUI(view)
 
         return view
     }
 
-    fun initUI(view: View) {
+    private fun setupUI(view: View) {
+        setupBackButton(view)
+        setupImageUploadButton(view)
+        setupDifficultySpinner(view)
+        setupAddRecipeButton(view)
+    }
+
+    private fun setupBackButton(view: View) {
         view.findViewById<ImageView>(R.id.iv_back).setOnClickListener {
-            val action = AddFragmentDirections.actionFragmentAddToFragmentRecipes2()
-            findNavController().navigate(action)
-        }
-
-        view.findViewById<Chip>(R.id.cp_addPhoto).setOnClickListener {
-            selectImageInAlbum()
-        }
-
-        val difList = listOf("Hard", "Medium", "Easy")
-
-        val adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_item, difList)
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        val spinner = view.findViewById<Spinner>(R.id.spin_dificulty)
-        spinner.adapter = adapter
-
-        view.findViewById<Chip>(R.id.cp_addRecipe).setOnClickListener {
-            viewModel.insertRecord(RecipeEntity(
-                name = view.findViewById<EditText>(R.id.et_name).text.toString(),
-                path = photoPath,
-                ingredients =  view.findViewById<EditText>(R.id.et_ingredients).text.toString(),
-                instructions =  view.findViewById<EditText>(R.id.et_instructions).text.toString(),
-                time = view.findViewById<EditText>(R.id.et_time).text.toString().toInt(),
-                tag = view.findViewById<EditText>(R.id.et_tag).text.toString(),
-                servings = view.findViewById<EditText>(R.id.et_servings).text.toString().toInt(),
-                favorite = false,
-                difficulty = spinner.getSelectedItem().toString(),
-                daysOfWeek = Gson().toJson(arrayOf(String))
-            ))
-
-            val action = AddFragmentDirections.actionFragmentAddToFragmentRecipes()
-            findNavController().navigate(action)
+            navigateToRecipes()
         }
     }
 
-    fun selectImageInAlbum() {
+    private fun navigateToRecipes() {
+        val action = AddFragmentDirections.actionFragmentAddToFragmentRecipes2()
+        findNavController().navigate(action)
+    }
+
+    private fun setupImageUploadButton(view: View) {
+        view.findViewById<Chip>(R.id.cp_addPhoto).setOnClickListener {
+            selectImageInAlbum()
+        }
+    }
+
+    private fun setupDifficultySpinner(view: View) {
+        val difficultyList = listOf("Hard", "Medium", "Easy")
+        val spinner = view.findViewById<Spinner>(R.id.spin_dificulty)
+
+        val adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_item, difficultyList).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        spinner.adapter = adapter
+    }
+
+    private fun setupAddRecipeButton(view: View) {
+        view.findViewById<Chip>(R.id.cp_addRecipe).setOnClickListener {
+            val recipe = createRecipeFromInput(view)
+            viewModel.insertRecord(recipe)
+            navigateToRecipes()
+        }
+    }
+
+    private fun createRecipeFromInput(view: View): RecipeEntity {
+        return RecipeEntity(
+            name = view.findViewById<EditText>(R.id.et_name).text.toString(),
+            path = photoPath,
+            ingredients = view.findViewById<EditText>(R.id.et_ingredients).text.toString(),
+            instructions = view.findViewById<EditText>(R.id.et_instructions).text.toString(),
+            time = view.findViewById<EditText>(R.id.et_time).text.toString().toInt(),
+            tag = view.findViewById<EditText>(R.id.et_tag).text.toString(),
+            servings = view.findViewById<EditText>(R.id.et_servings).text.toString().toInt(),
+            favorite = false,
+            difficulty = (view.findViewById<Spinner>(R.id.spin_dificulty).selectedItem).toString(),
+            daysOfWeek = Gson().toJson(arrayOf(String))
+        )
+    }
+
+    private fun selectImageInAlbum() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(intent, REQUEST_SELECT_IMAGE_IN_ALBUM)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (requestCode == REQUEST_SELECT_IMAGE_IN_ALBUM && resultCode == Activity.RESULT_OK) {
             data?.data?.let { uri ->
-                photoPath = uri.toString()
-
-                requireView().findViewById<Chip>(R.id.cp_addPhoto).text = "Photo Uploaded"
-                photoWillBeUpload = true
+                handleImageSelection(uri)
             }
         }
+    }
+
+    private fun handleImageSelection(uri: Uri) {
+        photoPath = uri.toString()
+        requireView().findViewById<Chip>(R.id.cp_addPhoto).text = "Photo Uploaded"
     }
 }
