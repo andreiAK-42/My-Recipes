@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".AddFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="70px"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/close">
+
+                </ImageView>
+
+
+                <View
+                    android:layout_width="0dip"
+                    android:layout_height="30dp"
+                    android:layout_weight="1" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="New Recipe"
+                    android:textAlignment="center"
+                    android:textSize="24dp"
+                    android:textStyle="bold">
+
+                </TextView>
+
+                <View
+                    android:layout_width="0dip"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/bg_white_rounded"
+                android:hint="Recipe Name"
+                android:paddingStart="20dp"
+                android:textColor="#b39f99">
+
+            </EditText>
+
+            <EditText
+                android:id="@+id/et_ingredients"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/bg_white_rounded"
+                android:hint="Ingredients"
+                android:gravity="top|left"
+                android:paddingTop="20dp"
+                android:paddingStart="20dp"
+                android:textColor="#b39f99">
+
+            </EditText>
+
+            <EditText
+                android:id="@+id/et_instructions"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/bg_white_rounded"
+                android:hint="Instructions"
+                android:gravity="top|left"
+                android:paddingTop="20dp"
+                android:paddingStart="20dp"
+                android:textColor="#b39f99">
+
+            </EditText>
+
+            <EditText
+                android:id="@+id/et_time"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/bg_white_rounded"
+                android:hint="Cooking Time (minutes)"
+                android:gravity="top|left"
+                android:paddingTop="20dp"
+                android:paddingStart="20dp"
+                android:textColor="#b39f99">
+
+            </EditText>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp">
+
+                <EditText
+                    android:id="@+id/et_servings"
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/bg_white_rounded"
+                    android:hint="Servings"
+                    android:gravity="top|left"
+                    android:paddingTop="20dp"
+                    android:paddingStart="20dp"
+                    android:textColor="#b39f99">
+
+                </EditText>
+
+                <View
+                    android:layout_width="0dip"
+                    android:layout_height="30dp"
+                    android:layout_weight="1" />
+
+                <Spinner
+                    android:id="@+id/spin_dificulty"
+                    android:layout_marginTop="15dp"
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/bg_white_rounded">
+
+                </Spinner>
+
+
+
+            </LinearLayout>
+
+
+            <EditText
+                android:id="@+id/et_tag"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/bg_white_rounded"
+                android:hint="Tag"
+                android:gravity="top|left"
+                android:paddingTop="20dp"
+                android:paddingStart="20dp"
+                android:textColor="#b39f99">
+
+            </EditText>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/cp_addPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/bg_white_rounded"
+                android:text="Upload Photo"
+                android:textAlignment="center"
+                app:chipStrokeColor="#f4f1f0"
+                android:paddingTop="20dp"
+                android:paddingStart="20dp"
+                android:textColor="@color/black">
+
+            </com.google.android.material.chip.Chip>
+
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/cp_addRecipe"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:backgroundTint="#ed5b2a"
+                android:text="Save Recipe"
+                android:textColor="@color/white"
+                android:textAlignment="center"
+                app:chipStrokeColor="@color/white">
+
+            </com.google.android.material.chip.Chip>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</FrameLayout>
