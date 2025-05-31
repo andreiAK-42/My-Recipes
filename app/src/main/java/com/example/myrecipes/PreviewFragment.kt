@@ -116,7 +116,9 @@ class PreviewFragment : Fragment() {
 
     private fun addRecipe() {
         viewModel.recipe.value?.apply {
-            path = photoPath
+            if (photoPath != null) {
+                path = photoPath
+            }
             daysOfWeek = Gson().toJson(langList)
             viewModel.updateRecord()
         }
