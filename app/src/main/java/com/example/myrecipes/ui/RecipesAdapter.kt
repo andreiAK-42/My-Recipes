@@ -117,6 +117,11 @@ class RecipesAdapter(
         applyFilters()
     }
 
+    fun setTime(newTime: String?) {
+        currentTime = newTime
+        applyFilters()
+    }
+
     fun searchFilter(query: String) {
         var filteredList = originalList.toList()
 
@@ -154,7 +159,7 @@ class RecipesAdapter(
             }
         }
 
-        if (currentTime != null) {
+        if (currentTime != null && currentTime != "All") {
             filteredList = filteredList.filter { recipe ->
                 recipe.time == currentTime!!.toInt()
             }

@@ -86,7 +86,7 @@ class RecipesFragment : Fragment(), RecipesAdapter.OnRecipeAdapterListener {
 
     private fun extractTagsAndTimes(recipes: List<RecipeEntity>): Pair<MutableList<String>, MutableList<String>> {
         val tagList = mutableListOf("All", "Favorite")
-        val timeList = mutableListOf<String>()
+        val timeList = mutableListOf("All")
 
         recipes.forEach { recipe ->
             tagList.add(recipe.tag)
@@ -102,6 +102,10 @@ class RecipesFragment : Fragment(), RecipesAdapter.OnRecipeAdapterListener {
 
         setupSpinner(view.findViewById(R.id.spin_filterDificulty)) { selectedDif ->
             recipesAdapter.setDif(selectedDif)
+        }
+
+        setupSpinner(view.findViewById(R.id.spin_filterTime)) { selectedTime ->
+            recipesAdapter.setTime(selectedTime)
         }
     }
 
